@@ -8,6 +8,7 @@ import sys
 import shutil
 import json
 
+import torch.nn as nn
 import torchvision.transforms as transforms
 from utils import cv2_greyscale, str2bool, save_h5
 
@@ -97,7 +98,7 @@ if __name__ == '__main__':
     # Hacky work-around: reset argv for the HardNet argparse
     sys.path.append(os.path.join('third_party', 'hardnet', 'code'))
     sys.argv = [sys.argv[0]]
-    from third_party.hardnet.code.HardNet import HardNet
+    from third_party.hardnet.code.HardNet import HardNet, ResHardNet34
     from third_party.hardnet.code.Utils import cv2_scale, np_reshape
     import torch
     try:
@@ -129,7 +130,7 @@ if __name__ == '__main__':
     transforms = get_transforms(False)
 
     model = HardNet()
-    model.load_state_dict(torch.load(args.weights_path,map_location=device)['state_dict'])
+    model.load_state_dict(torch.load(args.weights_path,map_location=device)['state_dict'], strict=False)
     print('Loaded weights: {}'.format(args.weights_path))
 
     model = model.to(device)
